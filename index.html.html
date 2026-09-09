@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청년부 일본단기선교 일본어 퀴즈 30문항</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+    body {
+      font-family: 'Gowun Dodum', 'Noto Sans KR', sans-serif;
+      background-color: #f0fdf4;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    }
+    .card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col items-center justify-center p-4">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-2xl bg-white rounded-3xl card-shadow border border-emerald-100 overflow-hidden my-6">
+    
+    <!-- Header -->
+    <header class="gradient-bg text-white p-6 text-center relative">
+      <div class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-semibold mb-2 backdrop-blur-sm">
+        ✝️ 어린이 비전선교 & 주일학교 퀴즈
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black tracking-tight">일본어 한글 표기 30문항 퀴즈</h1>
+      <p class="text-emerald-100 text-sm mt-1">예수님의 사랑을 일본어로 전해요!</p>
+    </header>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="p-8 text-center">
+      <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">
+        🇯🇵
+      </div>
+      <h2 class="text-xl font-bold text-slate-800 mb-3">준비되셨나요?</h2>
+      <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+        선교지와 주일학교에서 꼭 필요한 24가지 일본어 표현을 기반으로 한<br><b>30문항 랜덤 퀴즈</b>입니다.
+      </p>
+      <button onclick="startQuiz()" class="w-full sm:w-auto px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:brightness-105 active:scale-95 transition-all duration-200 text-lg">
+        🚀 퀴즈 시작하기
+      </button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="p-6 hidden">
+      <!-- Progress Bar -->
+      <div class="mb-6">
+        <div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
+          <span id="question-number">문제 1 / 30</span>
+          <span id="score-count" class="text-emerald-600">점수: 0점</span>
+        </div>
+        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+          <div id="progress-bar" class="gradient-bg h-full transition-all duration-300" style="width: 3.33%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Box -->
+      <div class="bg-emerald-50/50 rounded-2xl p-5 mb-6 border border-emerald-100">
+        <span id="question-category" class="inline-block bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-md font-bold mb-2">
+          카테고리
+        </span>
+        <h3 id="question-text" class="text-lg font-bold text-slate-800 leading-snug">
+          질문이 여기에 표시됩니다.
+        </h3>
+      </div>
+
+      <!-- Options Container -->
+      <div id="options-container" class="space-y-3 mb-6">
+        <!-- Dynamic options will be inserted here -->
+      </div>
+
+      <!-- Explanation Box (Hidden by default) -->
+      <div id="explanation-box" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
+        <div id="explanation-title" class="font-bold text-sm mb-1"></div>
+        <p id="explanation-text" class="text-xs text-slate-600 leading-relaxed"></p>
+      </div>
+
+      <!-- Next Button -->
+      <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition duration-200">
+        다음 문제로 👉
+      </button>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="p-8 text-center hidden">
+      <div class="w-20 h-20 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+        🏆
+      </div>
+      <h2 class="text-2xl font-black text-slate-800 mb-1">수고하셨습니다!</h2>
+      <p class="text-slate-500 text-sm mb-6">퀴즈를 모두 완료했습니다.</p>
+
+      <div class="bg-emerald-50 rounded-2xl p-6 mb-6 border border-emerald-100">
+        <div class="text-sm text-slate-600 mb-1">최종 점수</div>
+        <div class="text-4xl font-black text-emerald-600"><span id="final-score">0</span> <span class="text-lg font-normal text-slate-500">/ 100점</span></div>
+        <div id="result-message" class="text-xs font-medium text-emerald-700 mt-2"></div>
+      </div>
+
+      <button onclick="restartQuiz()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:brightness-105 active:scale-95 transition duration-200">
+        🔄 다시 도전하기
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const questions = [
+      {
+        category: "복음 선포",
+        question: "'예수님 믿으세요'를 나타내는 올바른 일본어 한글 표기는 무엇일까요?",
+        options: ["예수사마(오) 신지테 쿠다사이", "슈노 미나데 슈쿠후쿠시마스", "요로시쿠 오네가이시마스", "오이시쿠 타베테네"],
+        answer: 0,
+        explanation: "'예수사마(오) 신지테 쿠다사이'는 상대방에게 예수님을 믿으라고 권유하는 복음 전도 표현입니다."
+      },
+      {
+        category: "언어 표현",
+        question: "일본어로 상대방에게 '일본어를 못 해요'라고 솔직하게 전할 때 알맞은 표현은?",
+        options: ["카-도 데끼마스까?", "니홍고가 데끼마셍", "스미마셍, 토이레와 도코데스까", "이꾸라데스까"],
+        answer: 1,
+        explanation: "'니홍고가 데끼마셍'은 '일본어를 할 수 없습니다'라는 의미의 완곡하고 정중한 거절/표현입니다."
+      },
+      {
+        category: "축복/격려",
+        question: "'주님의 이름으로 축복합니다'라고 인사할 때 알맞은 표현은 무엇일까요?",
+        options: ["슈노 미나오 삼비시마스", "슈노 미나데 슈쿠후쿠시마스", "슈요 에이코-오 우케테쿠다사이", "쿄오모 이치니치, 오츠카레사마데시타"],
+        answer: 1,
+        explanation: "'슈노 미나데 슈쿠후쿠시마스'는 주님의 이름으로 이웃과 성도를 축복하는 따뜻한 인사입니다."
+      },
+      {
+        category: "나눔/선물",
+        question: "준비한 선물을 일본 친구에게 전하며 '선물입니다'라고 말할 때 사용하는 표현은?",
+        options: ["코레 쿠다사이", "프레젠토 데스", "오카이케- 오네가이시마스", "도오조 메시아갓테 쿠다사이"],
+        answer: 1,
+        explanation: "'프레젠토 데스'는 외래어 'Present'를 사용해 '선물입니다'라고 알리는 친근한 표현입니다."
+      },
+      {
+        category: "찬양/예배",
+        question: "'주님의 이름을 찬양합니다'라는 고백을 나타내는 올바른 일본어는?",
+        options: ["슈노 미나오 삼비시마스", "슈노나카데 카나라즈 데끼마스", "하지메마시테", "예수사마와 아나타오 아이시테오라레마스"],
+        answer: 0,
+        explanation: "'슈노 미나오 삼비시마스'는 찬양 시간에 하나님을 높여 드리는 고백입니다."
+      },
+      {
+        category: "상점/식당",
+        question: "식당이나 가게에서 '계산 부탁합니다'라고 정중히 말할 때 알맞은 표기는?",
+        options: ["코레 쿠다사이", "이꾸라데스까", "오카이케- 오네가이시마스", "스미마셍가, 카-도와 춋또..."],
+        answer: 2,
+        explanation: "'오카이케- 오네가이시마스'는 식사나 물건 구매 후 계산을 요청하는 표준적인 표현입니다."
+      },
+      {
+        category: "복음 메시지",
+        question: "'예수님은 당신을 사랑하십니다'라는 핵심 복음 메시지를 바르게 표현한 것은?",
+        options: ["예수사마와 아나타오 아이시테오라레마스", "예수키리스토노 치시오니와 치카라가 아리마스", "하이, 칸코쿠카라 예수사마노 아이오 쯔타에루 타메니 키마시타", "슈요 에이코-오 우케테쿠다사이"],
+        answer: 0,
+        explanation: "'예수사마와 아나타오 아이시테오라레마스'는 높임말을 사용하여 예수님의 사랑을 정중히 전하는 문장입니다."
+      },
+      {
+        category: "식사 인사",
+        question: "식사하기 직전에 감사한 마음으로 '잘 먹겠습니다'라고 하는 인사말은?",
+        options: ["고치소오사마데시타", "이타다키마스", "도오조 메시아갓테 쿠다사이", "오이시쿠 타베테네"],
+        answer: 1,
+        explanation: "일본에서는 식사 전에 손을 모으고 '이타다키마스(잘 먹겠습니다)'라고 인사합니다."
+      },
+      {
+        category: "식사 인사",
+        question: "식사를 모두 마친 후 감사 인사로 '잘 먹었습니다'라고 말할 때 쓰는 올바른 표기는?",
+        options: ["이타다키마스", "고치소오사마데시타", "오카이케- 오네가이시마스", "도오조 메시아갓테 쿠다사이"],
+        answer: 1,
+        explanation: "식사 후에는 음식을 제공해준 분과 하나님께 감사의 뜻으로 '고치소오사마데시타'라고 말합니다."
+      },
+      {
+        category: "기도/찬양",
+        question: "하나님께 진심을 담아 '주여 영광 받으시옵소서'라고 기도/찬양할 때의 표현은?",
+        options: ["슈요 에이코-오 우케테쿠다사이", "슈노 미나데 슈쿠후쿠시마스", "슈노 미나오 삼비시마스", "슈노나카데 카나라즈 데끼마스"],
+        answer: 0,
+        explanation: "'슈요 에이코-오 우케테쿠다사이'는 주님께 모든 영광을 올려드리는 깊은 고백입니다."
+      },
+      {
+        category: "식사 권유",
+        question: "선교지 손님이나 웃어른에게 정중하게 '맛있게 드세요!'라고 권할 때 쓰는 표현은?",
+        options: ["오이시쿠 타베테네", "도오조 메시아갓테 쿠다사이", "고치소오사마데시타", "이타다키마스"],
+        answer: 1,
+        explanation: "'도오조 메시아갓테 쿠다사이'는 어른이나 손님에게 정중하게 식사를 권하는 표현입니다."
+      },
+      {
+        category: "식사 권유",
+        question: "친한 친구나 어린아이에게 '맛있게 먹어~!'라고 친근하게 말할 때 올바른 표현은?",
+        options: ["도오조 메시아갓테 쿠다사이", "오이시쿠 타베테네", "이타다키마스", "요로시쿠 오네가이시마스"],
+        answer: 1,
+        explanation: "'오이시쿠 타베테네'는 또래나 아우에게 친근하게 음식을 먹으라고 건네는 말입니다."
+      },
+      {
+        category: "비전선교 소개",
+        question: "'네, 한국에서 예수님의 사랑을 전하기 위해서 왔어요'라는 긴 문장은?",
+        options: ["하이, 칸코쿠카라 예수사마노 아이오 쯔타에루 타메니 키마시타", "예수사마와 아나타오 아이시테오라레마스", "쿄오모 이치니치, 오츠카레사마데시타", "슈노나카데 카나라즈 데끼마스"],
+        answer: 0,
+        explanation: "일본 선교지에서 방문 목적을 소개할 때 매우 유용하고 명확한 문장입니다."
+      },
+      {
+        category: "격려 인사",
+        question: "하루 봉사나 사역을 마치고 '오늘 하루도 정말 수고 많으셨어요'라고 격려하는 인사말은?",
+        options: ["쿄오모 이치니치, 오츠카레사마데시타", "요로시쿠 오네가이시마스", "하지메마시테", "슈노 미나데 슈쿠후쿠시마스"],
+        answer: 0,
+        explanation: "'오츠카레사마데시타'는 하루 일을 마친 상대방의 노고를 위로하고 격려하는 아름다운 인사입니다."
+      },
+      {
+        category: "믿음의 선포",
+        question: "'주님 안에서 반드시 할 수 있습니다'라고 믿음을 선포할 때 쓰는 표현은?",
+        options: ["슈노나카데 카나라즈 데끼마스", "슈노 미나오 삼비시마스", "예수키리스토노 치시오니와 치카라가 아리마스", "하이, 데끼마스"],
+        answer: 0,
+        explanation: "어려운 상황 속에서도 주님의 능력을 신뢰하며 담대히 선포하는 고백입니다."
+      },
+      {
+        category: "결제/상점",
+        question: "가게나 식당에서 '카드 되나요?'라고 질문하는 올바른 문장은?",
+        options: ["카-도 데끼마스까?", "이꾸라데스까", "코레 쿠다사이", "오카이케- 오네가이시마스"],
+        answer: 0,
+        explanation: "신용카드 결제 가능 여부를 확인할 때 '카-도 데끼마스까?'라고 묻습니다."
+      },
+      {
+        category: "결제/상점",
+        question: "'카-도 데끼마스까?'(카드 되나요?)라는 질문에 '네, 됩니다'라고 대답하는 알맞은 표현은?",
+        options: ["하이, 데끼마스", "스미마셍가, 카-도와 춋또...", "니홍고가 데끼마셍", "요로시쿠 오네가이시마스"],
+        answer: 0,
+        explanation: "'하이, 데끼마스'는 가능함을 나타내는 긍정의 대답입니다."
+      },
+      {
+        category: "결제/상점",
+        question: "직원이 '죄송합니다만, 카드는 좀...'하고 카드 결제가 불가능함을 완곡히 표현할 때 쓰는 말은?",
+        options: ["스미마셍가, 카-도와 춋또...", "니홍고가 데끼마셍", "오카이케- 오네가이시마스", "이꾸라데스까"],
+        answer: 0,
+        explanation: "일본에서는 직접 거절하기보다 '춋또...'라고 말하며 완곡하게 사과하는 문화가 있습니다."
+      },
+      {
+        category: "호칭/예의",
+        question: "처음 만난 선교지 성도님에게 '어떻게 부르면 될까요?'라고 호칭을 정중히 물어볼 때 쓰는 말은?",
+        options: ["난토 오요비시타라 이이데스카", "난테 욘다라 이이(데스카)", "하지메마시테", "요로시쿠 오네가이시마스"],
+        answer: 0,
+        explanation: "웃어른이나 처음 만난 분의 성함/호칭을 정중히 여쭤볼 때 사용합니다."
+      },
+      {
+        category: "호칭/예의",
+        question: "또래 친구나 어린아이에게 '뭐라고 부르면 될까(요)?'라고 편하게 물어볼 때 알맞은 표현은?",
+        options: ["난테 욘다라 이이(데스카)", "난토 오요비시타라 이이데스카", "하지메마시테", "요로시쿠 오네가이시마스"],
+        answer: 0,
+        explanation: "친근하게 또래나 아이들에게 이름을 물어볼 때 사용하는 가벼운 표현입니다."
+      },
+      {
+        category: "영적 선포",
+        question: "'예수그리스도의 보혈에는 능력이 있습니다'라는 강력한 영적 선포 표현은?",
+        options: ["예수키리스토노 치시오니와 치카라가 아리마스", "예수사마와 아나타오 아이시테오라레마스", "슈노 미나데 슈쿠후쿠시마스", "슈노나카데 카나라즈 데끼마스"],
+        answer: 0,
+        explanation: "'치시오(혈액/보혈)'와 '치카라(힘/능력)' 단어가 포함된 영적 승리의 선포입니다."
+      },
+      {
+        category: "길 안내",
+        question: "길이나 건물 안에서 '저기요, 화장실은 어디예요?'라고 정중하게 장소를 물을 때 쓰는 표현은?",
+        options: ["스미마셍, 토이레와 도코데스까", "이꾸라데스까", "코레 쿠다사이", "니홍고가 데끼마셍"],
+        answer: 0,
+        explanation: "'스미마셍(저기요/죄송합니다)'과 '도코데스까(어디입니까)'를 결합한 질문입니다."
+      },
+      {
+        category: "쇼핑",
+        question: "상점에서 물건을 사고 싶을 때 '얼마인가요?'라고 가격을 물어보는 표현은?",
+        options: ["이꾸라데스까", "코레 쿠다사이", "오카이케- 오네가이시마스", "카-도 데끼마스까?"],
+        answer: 0,
+        explanation: "'이꾸라'는 '얼마'를 뜻하며, 가격을 질문할 때 쓰는 핵심 표현입니다."
+      },
+      {
+        category: "쇼핑",
+        question: "사고 싶은 물건을 손으로 가리키며 '이거 주세요'라고 말할 때 알맞은 표기는?",
+        options: ["코레 쿠다사이", "이꾸라데스까", "프레젠토 데스", "오카이케- 오네가이시마스"],
+        answer: 0,
+        explanation: "'코레'는 '이것', '쿠다사이'는 '주세요'라는 뜻입니다."
+      },
+      {
+        category: "첫인사",
+        question: "처음 만난 일본 현지 사람에게 건네는 첫인사 '처음 뵙겠습니다'는 무엇일까요?",
+        options: ["하지메마시테", "요로시쿠 오네가이시마스", "쿄오모 이치니치, 오츠카레사마데시타", "슈노 미나데 슈쿠후쿠시마스"],
+        answer: 0,
+        explanation: "'하지메마시테'는 만남의 시작에서 건네는 대표적인 첫인사입니다."
+      },
+      {
+        category: "첫인사",
+        question: "자기소개를 마치거나 상대방에게 협조를 구할 때 '잘 부탁드립니다'라고 하는 필수 인사말은?",
+        options: ["요로시쿠 오네가이시마스", "하지메마시테", "오츠카레사마데시타", "도오조 메시아갓테 쿠다사이"],
+        answer: 0,
+        explanation: "인사를 마무리할 때 항상 덧붙이는 매우 정중하고 정겨운 표현입니다."
+      },
+      {
+        category: "사람 수 세기",
+        question: "일본어로 사람의 수를 셀 때 '한 명 / 두 명 / 세 명'을 바르게 짝지은 것은?",
+        options: ["히토리 / 후따리 / 산닝", "히또쯔 / 후따쯔 / 밋쯔", "이치 / 니 / 산", "후따리 / 히토리 / 산닝"],
+        answer: 0,
+        explanation: "사람 수는 '1명 = 히토리', '2명 = 후따리', '3명 = 산닝'으로 세어 줍니다."
+      },
+      {
+        category: "물건 개수 세기",
+        question: "물건의 개수를 셀 때 '한 개 / 두 개 / 세 개'를 올바른 순서대로 나열한 것은?",
+        options: ["히또쯔 / 후따쯔 / 밋쯔", "히토리 / 후따리 / 산닝", "이치 / 니 / 산", "밋쯔 / 후따쯔 / 히또쯔"],
+        answer: 0,
+        explanation: "물건 개수는 '1개 = 히또쯔', '2개 = 후따쯔', '3개 = 밋쯔'로 세어 줍니다."
+      },
+      {
+        category: "사람 수 세기",
+        question: "식당에 방문했을 때 인원수가 '두 명'임을 알려주려고 합니다. 알맞은 단어는?",
+        options: ["후따리", "히토리", "산닝", "후따쯔"],
+        answer: 0,
+        explanation: "'2명'은 일본어로 '후따리'라고 고유 수사를 사용합니다."
+      },
+      {
+        category: "물건 개수 세기",
+        question: "가게에서 빵을 '세 개' 구매하려고 합니다. 개수를 정확히 지칭하는 단어는?",
+        options: ["밋쯔", "산닝", "후따쯔", "히또쯔"],
+        answer: 0,
+        explanation: "'3개'는 일본어로 '밋쯔'라고 부릅니다."
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = null;
+
+    function startQuiz() {
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      currentQuestionIndex = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestionIndex];
+      
+      // Update Question Info
+      document.getElementById('question-number').innerText = `문제 ${currentQuestionIndex + 1} / ${questions.length}`;
+      document.getElementById('score-count').innerText = `점수: ${score}점`;
+      document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+      document.getElementById('question-category').innerText = q.category;
+      document.getElementById('question-text').innerText = q.question;
+
+      // Reset options & UI
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      document.getElementById('explanation-box').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+      selectedAnswer = null;
+
+      q.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 transition-all duration-150 flex items-center justify-between font-medium text-slate-700 option-btn`;
+        btn.onclick = () => selectOption(index);
+        btn.innerHTML = `
+          <span>${index + 1}. ${option}</span>
+          <i class="far fa-circle text-slate-300 option-icon"></i>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(index) {
+      if (selectedAnswer !== null) return; // Prevent changing choice
+      selectedAnswer = index;
+
+      const q = questions[currentQuestionIndex];
+      const buttons = document.querySelectorAll('.option-btn');
+      const explanationBox = document.getElementById('explanation-box');
+      const explanationTitle = document.getElementById('explanation-title');
+      const explanationText = document.getElementById('explanation-text');
+
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        const icon = btn.querySelector('.option-icon');
+
+        if (i === q.answer) {
+          btn.classList.remove('border-slate-200', 'hover:bg-emerald-50/50');
+          btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'font-bold');
+          icon.className = 'fas fa-check-circle text-emerald-600 text-lg';
+        } else if (i === index) {
+          btn.classList.remove('border-slate-200');
+          btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-900');
+          icon.className = 'fas fa-times-circle text-rose-500 text-lg';
+        }
+      });
+
+      if (index === q.answer) {
+        score += Math.round(100 / questions.length);
+        explanationTitle.className = 'font-bold text-sm mb-1 text-emerald-700';
+        explanationTitle.innerText = '⭕ 정답입니다!';
+      } else {
+        explanationTitle.className = 'font-bold text-sm mb-1 text-rose-600';
+        explanationTitle.innerText = '❌ 아쉽네요! 정답은 ' + (q.answer + 1) + '번입니다.';
+      }
+
+      explanationText.innerText = q.explanation;
+      explanationBox.classList.remove('hidden');
+      document.getElementById('next-btn').classList.remove('hidden');
+      document.getElementById('score-count').innerText = `점수: ${score}점`;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('result-screen').classList.remove('hidden');
+      document.getElementById('final-score').innerText = score;
+
+      const msg = document.getElementById('result-message');
+      if (score >= 90) {
+        msg.innerText = "🎉 대단해요! 완벽하게 준비되었습니다. 일본 선교의 멋진 일꾼이에요!";
+      } else if (score >= 70) {
+        msg.innerText = "👍 아주 훌륭합니다! 조금만 더 연습하면 완벽해질 거예요.";
+      } else {
+        msg.innerText = "🌱 복습을 통해 일본어 표현을 차근차근 익혀보아요. 화이팅!";
+      }
+    }
+
+    function restartQuiz() {
+      document.getElementById('result-screen').classList.add('hidden');
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
